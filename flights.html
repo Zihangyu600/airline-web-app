@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flight Search Results</title>
+</head>
+<body>
+    <h2>Available Flights</h2>
+
+    <table border="1">
+        <tr>
+            <th>Flight Number</th>
+            <th>Departure Date</th>
+            <th>Origin</th>
+            <th>Destination</th>
+            <th>Departure Time</th>
+            <th>Details</th>
+        </tr>
+        {% for flight in flights %}
+        <tr>
+            <td>{{ flight[0] }}</td>
+            <td>{{ flight[1] }}</td>
+            <td>{{ flight[2] }}</td>
+            <td>{{ flight[3] }}</td>
+            <td>{{ flight[4] }}</td>
+            <td>
+                <a href="/details?flight_number={{ flight[0] }}&departure_date={{ flight[1] }}">
+                    View Seats
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+    <a href="/">Back to Search</a>
+</body>
+</html>
