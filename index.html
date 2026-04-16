@@ -2,35 +2,160 @@
 <html>
 <head>
     <title>Flight Search</title>
+    <!-- flatpickr 日历库 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        select, input, button {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.2);
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102,126,234,0.4);
+        }
+
+        /* flatpickr 日历样式微调 */
+        .flatpickr-day.disabled {
+            color: #ccc;
+            background: #f5f5f5;
+            text-decoration: line-through;
+        }
+
+        .flatpickr-day.available {
+            background: #667eea;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
-    <h2>Search Flights</h2>
-    <form action="/search" method="get">
-        <label>Origin Airport:</label>
-        <select name="origin" required>
-            <option value="">-- Select Origin --</option>
-            {% for airport in airports %}
-            <option value="{{ airport[0] }}">{{ airport[0] }} - {{ airport[1] }} ({{ airport[2] }})</option>
-            {% endfor %}
-        </select>
-        <br><br>
+    <div class="container">
+        <h2>✈️ Flight Search</h2>
+        <form action="/search" method="get">
+            <label>🛫 Origin Airport</label>
+            <select name="origin" required>
+                <option value="">-- Select Origin --</option>
+                {% for airport in airports %}
+                <option value="{{ airport[0] }}">{{ airport[0] }} - {{ airport[1] }} ({{ airport[2] }})</option>
+                {% endfor %}
+            </select>
 
-        <label>Destination Airport:</label>
-        <select name="dest" required>
-            <option value="">-- Select Destination --</option>
-            {% for airport in airports %}
-            <option value="{{ airport[0] }}">{{ airport[0] }} - {{ airport[1] }} ({{ airport[2] }})</option>
-            {% endfor %}
-        </select>
-        <br><br>
+            <label>🛬 Destination Airport</label>
+            <select name="dest" required>
+                <option value="">-- Select Destination --</option>
+                {% for airport in airports %}
+                <option value="{{ airport[0] }}">{{ airport[0] }} - {{ airport[1] }} ({{ airport[2] }})</option>
+                {% endfor %}
+            </select>
 
-        <label>Start Date:</label>
-        <input type="date" name="start_date" required><br><br>
+            <label>📅 Start Date</label>
+            <input type="text" id="start_date" name="start_date" placeholder="Select start date" required>
 
-        <label>End Date:</label>
-        <input type="date" name="end_date" required><br><br>
+            <label>📅 End Date</label>
+            <input type="text" id="end_date" name="end_date" placeholder="Select end date" required>
 
-        <button type="submit">Search Flights</button>
-    </form>
+            <button type="submit">🔍 Search Flights</button>
+        </form>
+        <footer>Only dates with available flights are selectable</footer>
+    </div>
+
+    <script>
+        const flightDates = {{ flight_dates | tojson }};
+
+        flatpickr("#start_date", {
+            dateFormat: "Y-m-d",
+            disable: [
+                function(date) {
+                    const dateStr = date.toISOString().split('T')[0];
+                    return !flightDates.includes(dateStr);
+                }
+            ],
+            onChange: function(selectedDates, dateStr, instance) {
+                if (dateStr) {
+                    endPicker.set('minDate', dateStr);
+                }
+            }
+        });
+
+        const endPicker = flatpickr("#end_date", {
+            dateFormat: "Y-m-d",
+            disable: [
+                function(date) {
+                    const dateStr = date.toISOString().split('T')[0];
+                    return !flightDates.includes(dateStr);
+                }
+            ]
+        });
+    </script>
 </body>
 </html>
