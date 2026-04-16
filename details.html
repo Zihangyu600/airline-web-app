@@ -2,17 +2,143 @@
 <html>
 <head>
     <title>Flight Details</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .flight-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .info {
+            text-align: left;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .value {
+            color: #333;
+            font-family: monospace;
+            font-size: 16px;
+        }
+
+        .available {
+            color: #28a745;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .warning {
+            color: #dc3545;
+        }
+
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            margin-top: 20px;
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
-    <h2>Flight Details</h2>
+    <div class="card">
+        <div class="flight-icon">✈️</div>
+        <h2>Flight Details</h2>
 
-    <p><strong>Flight Number:</strong> {{ flight_number }}</p>
-    <p><strong>Departure Date:</strong> {{ departure_date }}</p>
-    <p><strong>Plane Capacity:</strong> {{ capacity }}</p>
-    <p><strong>Booked Seats:</strong> {{ booked }}</p>
-    <p><strong>Available Seats:</strong> {{ available }}</p>
+        <div class="info">
+            <div class="info-row">
+                <span class="label">Flight Number:</span>
+                <span class="value">{{ flight_number }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Departure Date:</span>
+                <span class="value">{{ departure_date }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Plane Capacity:</span>
+                <span class="value">{{ capacity }} seats</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Booked Seats:</span>
+                <span class="value">{{ booked }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Available Seats:</span>
+                <span class="value {% if available < 10 %}warning{% endif %}">
+                    {% if available > 0 %}
+                        🟢 {{ available }}
+                    {% else %}
+                        🔴 Sold Out
+                    {% endif %}
+                </span>
+            </div>
+        </div>
 
-    <br>
-    <a href="/">Back to Search</a>
+        <a href="/" class="back-btn">← Back to Search</a>
+        <footer>Available seats are updated in real-time</footer>
+    </div>
 </body>
 </html>
