@@ -6,11 +6,23 @@
 <body>
     <h2>Search Flights</h2>
     <form action="/search" method="get">
-        <label>Origin Airport Code:</label>
-        <input type="text" name="origin" required><br><br>
+        <label>Origin Airport:</label>
+        <select name="origin" required>
+            <option value="">-- Select Origin --</option>
+            {% for airport in airports %}
+            <option value="{{ airport[0] }}">{{ airport[0] }} - {{ airport[1] }} ({{ airport[2] }})</option>
+            {% endfor %}
+        </select>
+        <br><br>
 
-        <label>Destination Airport Code:</label>
-        <input type="text" name="dest" required><br><br>
+        <label>Destination Airport:</label>
+        <select name="dest" required>
+            <option value="">-- Select Destination --</option>
+            {% for airport in airports %}
+            <option value="{{ airport[0] }}">{{ airport[0] }} - {{ airport[1] }} ({{ airport[2] }})</option>
+            {% endfor %}
+        </select>
+        <br><br>
 
         <label>Start Date:</label>
         <input type="date" name="start_date" required><br><br>
