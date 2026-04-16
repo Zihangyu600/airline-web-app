@@ -14,16 +14,33 @@ def get_db_connection():
     return conn
 
 
+from datetime import date
+
 
 @app.route('/')
 def index():
     conn = get_db_connection()
     cur = conn.cursor()
+
+    # 获取机场列表
     cur.execute("SELECT airport_code, name, city FROM Airport ORDER BY airport_code")
     airports = cur.fetchall()
+
+    # 获取有航班的日期列表
+    cur.execute("SELECT DISTINCT departure_date FROM Flight ORDER BY departure_date")
+    flight_dates = cur.fetchall()
+    # 转换成 YYYY-MM-DD 格式的列表
+    flight_dates_list = [d[0].strftime('%Y-%m-%d') for d in flight_dates]
+
     cur.close()
     conn.close()
-    return render_template('index.html', airports=airports)
+
+    today = date.today().isoformat()
+
+    return render_template('index.html',
+                           airports=airports,
+                           min_date=today,
+                           flight_dates=flight_dates_list)
 
 @app.route('/search')
 def search():
