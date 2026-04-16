@@ -9,15 +9,21 @@ def get_db_connection():
         host="localhost",
         database="airline_db",
         user="postgres",
-        password="yzh200331"  # 改成你的密码
+        password="yzh200331" 
     )
     return conn
 
 
+
 @app.route('/')
 def index():
-    return render_template('index.html')
-
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT airport_code, name, city FROM Airport ORDER BY airport_code")
+    airports = cur.fetchall()
+    cur.close()
+    conn.close()
+    return render_template('index.html', airports=airports)
 
 @app.route('/search')
 def search():
