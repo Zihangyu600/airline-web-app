@@ -103,6 +103,7 @@
         <h2>✈️ Flight Search</h2>
         <form action="/search" method="get">
             <label>🛫 Origin Airport</label>
+            <!--name="origin"：后端用 request.args.get('origin') 获取-->
             <select name="origin" required>
                 <option value="">-- Select Origin --</option>
                 {% for airport in airports %}
@@ -129,33 +130,19 @@
         <footer>Only dates with available flights are selectable</footer>
     </div>
 
-    <script>
-        const flightDates = {{ flight_dates | tojson }};
-
-        flatpickr("#start_date", {
-            dateFormat: "Y-m-d",
-            disable: [
-                function(date) {
-                    const dateStr = date.toISOString().split('T')[0];
-                    return !flightDates.includes(dateStr);
+     <script>
+          flatpickr("#start_date", {
+                dateFormat: "Y-m-d",
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (dateStr) {
+                        endPicker.set('minDate', dateStr);
+                    }
                 }
-            ],
-            onChange: function(selectedDates, dateStr, instance) {
-                if (dateStr) {
-                    endPicker.set('minDate', dateStr);
-                }
-            }
-        });
+            });
 
         const endPicker = flatpickr("#end_date", {
-            dateFormat: "Y-m-d",
-            disable: [
-                function(date) {
-                    const dateStr = date.toISOString().split('T')[0];
-                    return !flightDates.includes(dateStr);
-                }
-            ]
+            dateFormat: "Y-m-d"
         });
-    </script>
+     </script>
 </body>
 </html>
